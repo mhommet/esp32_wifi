@@ -1,8 +1,12 @@
 # Documentation du Projet Point d'Accès Wi-Fi
 
-## 1. Introduction
+## 0. Introduction
 
 Ce projet crée un point d'accès Wi-Fi sur une plateforme basée sur un microcontrôleur ESP32. Le programme génère un mot de passe aléatoire pour chaque connexion, le change dès qu'un client se connecte et essaie de se connecter à des réseaux Wi-Fi détectés. Ce système peut être utilisé dans des environnements où l'on souhaite sécuriser l'accès tout en permettant la gestion dynamique des connexions.
+
+## 1 Installation
+
+Installer sur Arduino IDE le board ESP32 DEV MODULE ainsi que la bibliothèque esp32.
 
 ## 2. Architecture Technique
 
