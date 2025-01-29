@@ -96,7 +96,17 @@ void scanAndConnect() {
     for (int i = 0; i < numNetworks; i++) {
         String ssid = WiFi.SSID(i);
         ssid.toLowerCase();  // Convertir le SSID en minuscules pour comparaison insensible à la casse
-        if (ssid.startsWith("wifi_m2dfs_")) {
+        bool alreadyConnected = false;
+
+        // Vérifier si ce SSID est déjà dans la liste des connexions réussies
+        for (int j = 0; j < successfulCount; j++) {
+            if (ssid == successfulConnections[j]) {
+                alreadyConnected = true;
+                break;
+            }
+        }
+
+        if (!alreadyConnected && ssid.startsWith("wifi_m2dfs_")) {
             targetSSIDs[targetCount++] = WiFi.SSID(i); // Conserver le SSID d'origine (en cas de connexion)
         }
     }
@@ -134,6 +144,11 @@ void scanAndConnect() {
                         Serial.printf("%d. %s\n", k + 1, successfulConnections[k].c_str());
                     }
 
+                    // Retirer ce réseau de la liste des réseaux à essayer
+                    for (int k = i; k < targetCount - 1; k++) {
+                        targetSSIDs[k] = targetSSIDs[k + 1];
+                    }
+                    targetCount--;  // Réduire le nombre de réseaux à tester
                     WiFi.disconnect();  // Se déconnecter du réseau courant
                     delay(4000); // Attendre avant de tester les autres
                     break;
@@ -149,4 +164,5 @@ void scanAndConnect() {
 
     WiFi.scanDelete(); // Libère la mémoire après le scan
 }
+
 
