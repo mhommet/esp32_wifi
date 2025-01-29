@@ -6,19 +6,33 @@ char apPassword[32];  // Stocke le mot de passe actuel du hotspot
 
 // Liste des mots de passe possibles
 const char* passwords[] = {
-        "kxzvaajn", "nulebozl", "sylmukyv", "fzxhzodw", "mnhfwylw", "xhnvtwdd", "jrulvtsp", "ochdamfa", "plaluafr", "ovnkkilc",
-        "oizuxgas", "tjrdbrav", "pklzocye", "vtapalxp", "rtagjdnv", "frvuyeoe", "xghgxava", "rgolvnna", "yfxeqlny", "aewazmzb",
-        "shsiejiu", "iuvmohlb", "cjvxdfsl", "qpikserq", "utacmzqp", "ooxevhdn", "sxthtwxj", "llrwdkcx", "ddudifar", "zphrewdm",
-        "mpdkrxev", "updhshlc", "tllzdwkl", "riyypzdz", "oemqckth", "tffobpzd", "gtffxvfi", "txjtdwqy", "jfiqxhca", "sgypghxn",
-        "juixjinr", "aowreqdu", "swjeitqz", "igjautba", "aiyqeglh", "oswyyore", "xptdcttd", "pcprabke", "kmqzndiw", "dpqzamtm",
-        "dyzcslls", "navqcfvd", "anowzypk", "suahetlj", "yfhccclh", "qbmdivqr", "qblucjky", "dguzkxel", "ylpyzgjf", "kbfcdujc",
-        "ctuqkrdr", "ajevmebu", "skmcsqfz", "ffzlwiio", "aftglkvf", "xxdgtzlw", "cvlfsunn", "bhdvmvku", "nfqzutau", "ggxbhrho",
-        "qyfalgmh", "tcxkbhrn", "qpogobwf", "cllvemtd", "vthbmclx", "mygnkqqa", "whfrjrlf", "gwfeqkgf", "fkvgcrjw", "lezddzaj",
-        "xvczgqaa", "iekrpdyj", "ebkftonw", "eoudylkl", "ebxoxxfm", "janmvljn", "xfudqipe", "yuyfhefw", "irxkfjbq", "kwdvygqs",
-        "yvhsdunb", "qhqzskuo", "nkcuqjjx", "treyrebr", "iubgkumg", "iqeblqrp", "awllfhdq", "ywbvnsvp", "eqivzdwz", "feskhshm",
-        "fytbaolk", "lnqguosc", "mplxzpwm", "vsedeanw", "rvcnmtqq", "fsptuhkw", "pmjuvole", "fxwnbwxl", "rnkilsjh", "uqpkhdhl"
-    };
+    "kxzvaajn", "nulebozl", "sylmukyv", "fzxhzodw", "mnhfwylw", "xhnvtwdd", "jrulvtsp", "ochdamfa", "plaluafr", "ovnkkilc",
+    "oizuxgas", "tjrdbrav", "pklzocye", "vtapalxp", "rtagjdnv", "frvuyeoe", "xghgxava", "rgolvnna", "yfxeqlny", "aewazmzb",
+    "shsiejiu", "iuvmohlb", "cjvxdfsl", "qpikserq", "utacmzqp", "ooxevhdn", "sxthtwxj", "llrwdkcx", "ddudifar", "zphrewdm",
+    "mpdkrxev", "updhshlc", "tllzdwkl", "riyypzdz", "oemqckth", "tffobpzd", "gtffxvfi", "txjtdwqy", "jfiqxhca", "sgypghxn",
+    "juixjinr", "aowreqdu", "swjeitqz", "igjautba", "aiyqeglh", "oswyyore", "xptdcttd", "pcprabke", "kmqzndiw", "dpqzamtm",
+    "dyzcslls", "navqcfvd", "anowzypk", "suahetlj", "yfhccclh", "qbmdivqr", "qblucjky", "dguzkxel", "ylpyzgjf", "kbfcdujc",
+    "ctuqkrdr", "ajevmebu", "skmcsqfz", "ffzlwiio", "aftglkvf", "xxdgtzlw", "cvlfsunn", "bhdvmvku", "nfqzutau", "ggxbhrho",
+    "qyfalgmh", "tcxkbhrn", "qpogobwf", "cllvemtd", "vthbmclx", "mygnkqqa", "whfrjrlf", "gwfeqkgf", "fkvgcrjw", "lezddzaj",
+    "xvczgqaa", "iekrpdyj", "ebkftonw", "eoudylkl", "ebxoxxfm", "janmvljn", "xfudqipe", "yuyfhefw", "irxkfjbq", "kwdvygqs",
+    "yvhsdunb", "qhqzskuo", "nkcuqjjx", "treyrebr", "iubgkumg", "iqeblqrp", "awllfhdq", "ywbvnsvp", "eqivzdwz", "feskhshm",
+    "fytbaolk", "lnqguosc", "mplxzpwm", "vsedeanw", "rvcnmtqq", "fsptuhkw", "pmjuvole", "fxwnbwxl", "rnkilsjh", "uqpkhdhl",
+    "pqzxizwu", "lfgpxewt", "wbsvxglw", "adkfvisy", "moslxmvo", "caiongpk", "mdfldeyy", "fsacirgb", "seosmnio", "zjafdgsg",
+    "xjhbsqbr", "emjtockn", "ymajxpiu", "nijknifq", "hbkawhxp", "dxpygtws", "pkkkfsqc", "yfgydefu", "ocnbsmfu", "hqxndvfm",
+    "mpzxmzmc", "ynbxnvcb", "yvmmciwz", "nycmnnfk", "foitwmhx", "wslaloll", "obsotlwf", "qcejxtcc", "jytvottv", "yhgoeojj",
+    "nqvxubel", "zekupkif", "iuxizxgu", "ksfdaahq", "rfdyxagk", "aodiivkl", "nbomkfft", "gzjubrrt", "xkzfllsy", "zwnghvsp",
+    "lbdnrijp", "tztubmsb", "tmnfepsp", "dvhmvvak", "qldcakpn", "gaykchmm", "viulztoy", "rgppnxmt", "gxhxirmi", "nkrhfpvl",
+    "cnuvswpy", "qitnplny", "wrjcumvb", "fmksndas", "cwotawuz", "lzkfjavt", "deshqjlv", "hfcrpmqj", "stgtdpmk", "nealxloj",
+    "pqwygeet", "uuvqbkxw", "gyxuyioo", "rqkuzleq", "czuaaire", "pyxcaiqc", "exxysayd", "jajnriij", "nchoqudf", "uzexsnfm",
+    "jajuagec", "rnutbptb", "ogvbnogl", "emwuzqan", "kcgzpxfo", "fhgjzrxe", "nrncgdsx", "cywwydif", "lyuzcaqv", "iwzzufyn",
+    "qbfjmlfi", "tdnsshfc", "kssrcayx", "ifykxdys", "bazausxn", "wahbnioc", "jvnqahyb", "jngbwrke", "nobrqqda", "qjoehftw"
+};
+
 const int numPasswords = sizeof(passwords) / sizeof(passwords[0]);
+
+// Liste pour stocker les réseaux Wi-Fi connectés avec succès
+String successfulConnections[10];  // Limité à 10 pour cet exemple
+int successfulCount = 0;
 
 void changeHotspotPassword() {
     int randomIndex = random(0, numPasswords);
@@ -26,18 +40,18 @@ void changeHotspotPassword() {
     apPassword[sizeof(apPassword) - 1] = '\0';
 
     WiFi.softAP(apSSID, apPassword);  // Met à jour le hotspot avec un nouveau mot de passe
-    Serial.printf("Hotspot password changed to: %s\n", apPassword);
+    Serial.printf("Hotspot password changed to: %s 🔑\n", apPassword);
 }
 
 void WiFiEvent(WiFiEvent_t event, WiFiEventInfo_t info) {
     switch (event) {
         case WIFI_EVENT_AP_STACONNECTED:
-            Serial.println("Client connected, changing password...");
+            Serial.println("Client connected, changing password... 🔄");
             changeHotspotPassword();
             break;
 
         case WIFI_EVENT_AP_STADISCONNECTED:
-            Serial.println("Client disconnected");
+            Serial.println("Client disconnected 🚪");
             break;
 
         default:
@@ -47,7 +61,7 @@ void WiFiEvent(WiFiEvent_t event, WiFiEventInfo_t info) {
 
 void setup() {
     Serial.begin(9600);
-    Serial.println("Setting up Wi-Fi access point...");
+    Serial.println("Setting up Wi-Fi access point... 📶");
 
     randomSeed(analogRead(0)); // Initialise la génération de nombres aléatoires
     changeHotspotPassword(); // Définit un mot de passe initial aléatoire
@@ -61,7 +75,7 @@ void setup() {
 
 void loop() {
     scanAndConnect();
-    delay(30000); // Attendre 30 secondes avant de refaire un scan
+    delay(30000); // Attendre 30 secondes avant de refaire un scan ⏳
 }
 
 void scanAndConnect() {
@@ -107,7 +121,15 @@ void scanAndConnect() {
                 if (WiFi.status() == WL_CONNECTED) {
                     Serial.printf("🎉 Connected successfully to %s!\n", targetSSIDs[i].c_str());
                     Serial.printf("🌐 IP Address: %s\n", WiFi.localIP().toString().c_str());
-                    return; // Stopper dès qu'une connexion réussit
+
+                    // Ajouter ce réseau à la liste des connexions réussies
+                    if (successfulCount < 10) {
+                        successfulConnections[successfulCount++] = targetSSIDs[i];
+                    }
+
+                    WiFi.disconnect();  // Se déconnecter du réseau courant
+                    delay(4000); // Attendre avant de tester les autres
+                    break;
                 }
                 delay(500);
             }
@@ -118,6 +140,13 @@ void scanAndConnect() {
         }
     }
 
+    // Afficher les connexions réussies
+    if (successfulCount > 0) {
+        Serial.println("✅ Successfully connected to the following networks:");
+        for (int i = 0; i < successfulCount; i++) {
+            Serial.printf("%d. %s\n", i + 1, successfulConnections[i].c_str());
+        }
+    }
+
     WiFi.scanDelete(); // Libère la mémoire après le scan
 }
-
